@@ -1,0 +1,46 @@
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+#include<string>
+#include<bits/stdc++.h>
+#include<cctype>
+using namespace std;
+int main()
+{
+    int n;
+    string name1;
+
+    vector <string> name;
+
+    cin>>name1;
+    name.push_back(name1);
+    cin>>name1;
+    name.push_back(name1);
+    cin>>name1;
+    name.push_back(name1);
+    for(int i=0;i<name[2].length();i++)
+    {   if(isdigit(name[2].at(i)))
+    {
+        cout<<name[2].at(i);
+    }
+        else if(isupper(name[2].at(i)))
+    {
+        int a=name[0].find(tolower(name[2].at(i)));
+        int b=name[1].at(a);
+        cout<<char(b-32);
+
+    }
+    else if(islower(name[2].at(i)))
+    {
+        int a=name[0].find(name[2].at(i));
+        int b=name[1].at(a);
+        cout<<char(b);
+    }
+
+    }
+
+
+
+    return 0;
+
+}
