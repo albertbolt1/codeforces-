@@ -1,0 +1,32 @@
+#include<stdio.h>
+#include<conio.h>
+#include<iostream>
+#include<string>
+#include<bits/stdc++.h>
+using namespace std;
+int main()
+{
+    int n;
+    string name1;
+
+    cin>>n;
+    vector <string> name;
+
+    for(int i=0;i<n;i++)
+    {
+        cin>>name1;
+        name.push_back(name1);
+    }
+    for(int i=0;i<n;i++)
+    {
+        if((name[i].length())<=10)
+            cout<<name[i]<<endl;
+        else
+            cout<<name[i].substr(0,1)<<name[i].length()-2<<name[i].substr(name[i].length()-1,name[i].length())<<endl;
+    }
+
+
+
+    return 0;
+
+}
