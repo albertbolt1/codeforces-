@@ -1,0 +1,275 @@
+D. Kousuke's Assignment
+
+can be solved by greedy approach and also by DP 
+
+greedy I could have figured out but I went thinking from the dp point of view from the beginning and didnot look like Greedy would be succesfull 
+
+3
+5
+2 1 -3 2 1
+7
+12 -4 4 43 -3 -5 8
+6
+0 -4 0 3 0 1
+
+
+2 1 -3 2 1
+
+prefix sum array 
+0 1 2 3 4
+2 3 0 2 3
+
+we can see that 2 is repeating twice and 3 is repeating twice and we also have a zero but all these are over lapping 
+we have (2 1 -3) ( 1 -3 2 ) (-3 2 1)
+
+we can pick only one among these because all these are overlapping 
+
+12 -4 4 43 -3 -5 8
+
+0  1 2  3  4  5  6
+12 8 12 55 52 47 55
+
+12 repeating twice and so is 55 
+
+(-4 4) (-3 -5 8) but these are not over lapping so we can have 2
+0  1 2 3 4 5
+0 -4 0 3 0 1 
+
+0  1  2  3  4 5
+0 -4 -4 -1 -1 0
+
+here we have two -4 and two -1s as well as two zeros 
+
+(0) (0) (0) (-4 0 3 0 1)
+
+the first 3 are not over lapping and we get the maximum non overlapping segments by selecting those, if we select the last one then we can select only 2 
+
+(0 0) (2 2) (4 4) (1 5)  but I dont think we should get all the segments and then go over them to figure out which segments will be added, this will be costly 
+
+
+
+greedy approach (I think in this the smaller chunks are taking before taking a big chunk and it works)
+
+1) using map 
+
+add a 0 to the map so that if there is a 0 at the start we will consider it as 1 
+
+0 -4 0 3 0 1 
+
+map<int> some;
+
+some[0]=1
+
+some[0]=2     check if the value is 1 if it is then change it to zero 
+some[-4]=1
+some[-4]=2    0
+some[-1]=1   
+some[-1]=2    0
+some[0]=3     
+
+
+#include <bits/stdc++.h>
+using namespace std;
+ 
+int main()
+{
+int n;
+cin>>n;
+while(n--)
+{
+int k;
+cin>>k;
+map<long long,int> some;
+ 
+ 
+long long int sum=0;
+int ans=0;
+some[0]=1;
+for(int i=0;i<k;i++)
+{
+int temp;
+cin>>temp;
+sum+=(long long)temp;
+if(some[sum]>0)
+{
+ans+=1;
+some.clear();
+some[0]=1;
+sum=0;
+}
+else
+{
+    some[sum]=1;
+}
+}
+cout<<ans<<endl;
+}
+}
+
+The above one was the greedy method, we can also solve this using DP method 
+
+12 -4 4 43 -3 -5 8
+
+  0    1   2                        3        4  5  6
+  12   8   12                       55       52 47 55
+
+  0    0   max(1+dp[0],dp[1])       1        1  1  max(1+dp[3],dp[5])
+              
+           1                                       2
+
+return dp[n-1]
+
+ 0  1 2                         3 4 5
+ 0 -4 0                         3 0 1
+ 0 -4 -4                       -1 -1 0
+ 1  1 max(1+dp[1],dp[1])        2  3 3
+      2
+answer 3
+
+0 1 2
+5 0 0
+5 5 5
+0 1 2
+
+In a prefix array if we see a number and that number is present before then we know that the segment ending there has sum of zero
+We have two choices here, take this segment if we do this 
+
+
+************************************E
+        A
+******************S      B
+                  S****************E
+
+if we take segment B then we can add 1 to the total segments list and we have to take all the segments before B ie all segments in A 
+
+if we dont take segment ending at E then we have to take all the segments ending before it 
+
+max(1+dp[j],dp[i-1])
+
+0 1   2 3  4   5   6  7
+0 12 -4 4  43 -3   -5 8
+0 12  8 12 55  52  47 55
+
+0 1   2 1  4   5   6  4
+
+0 1 2 3 4 5
+0 2 1 -3 2 1
+0 2 3  0 2 3
+0 1 2  0 1 2
+
+0 1 2
+0 1 -3
+0 1 -2
+0 1 2
+
+
+
+
+int dp[100002];
+int some(int i,vector<int> temp)
+{
+if(i<0)
+{
+return 0;
+}
+int temp1;
+if(dp[i]!=-1)
+{
+    return dp[i];
+}
+if(temp[i]==i)
+{
+temp1=0;
+}
+else
+{
+temp1=1+some(temp[i],temp);
+}
+return dp[i]=max(temp1,some(i-1,temp));
+}
+
+int main()
+{
+   int n;
+   cin>>n;
+while(n--)
+{
+int k;
+cin>>k;
+vector<int> arr1(k+2,0);
+memset(dp,-1,sizeof(dp));
+map<int,int> somee;
+somee[0]=0;
+int sum=0;
+for(int i=0;i<k;i++)
+{
+int temp;
+cin>>temp;
+sum+=temp;
+if(somee.count(sum))
+{
+arr1[i+1]=somee[sum];
+}
+else
+{
+    arr1[i+1]=i+1;
+}
+somee[sum]=i+1;
+}
+cout<<some(k,arr1)<<endl;
+}
+}
+
+
+the tabulation method because the above one was throwing memory over load issues 
+
+int main()
+{
+   int n;
+   cin>>n;
+while(n--)
+{
+int k;
+cin>>k;
+vector<int> arr1(k+2,0);
+map<long long int,int> somee;
+somee[0]=0;
+long long int sum=0;
+for(int i=0;i<k;i++)
+{
+int temp;
+cin>>temp;
+sum+=temp;
+if(somee.count(sum))
+{
+arr1[i+1]=somee[sum];
+}
+else
+{
+    arr1[i+1]=i+1;
+}
+somee[sum]=i+1;
+}
+vector<int> dp(k+2,0);
+for(int i=1;i<k+1;i++)
+{
+if(arr1[i]==i)
+{
+dp[i]=dp[i-1];
+}
+else
+{
+dp[i]=max(1+dp[arr1[i]],dp[i-1]);
+}
+}
+cout<<dp[k]<<endl;
+}
+}
+
+
+
+
+
+
+
+
